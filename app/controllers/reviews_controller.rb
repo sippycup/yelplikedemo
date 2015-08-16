@@ -19,13 +19,24 @@ class ReviewsController < ApplicationController
     @review.user_id = current_user.id
     @review.restaurant_id = @restaurant.id
     
-    flash[:notice] = "Review was successfully created."
-    if @review.save
-      respond_with(@review,:location => @restaurant)
-    end
+    #flash[:notice] = "Review was successfully created."
+    #if @review.save
+    #  respond_with(@review,:location => @restaurant)
+    #end
 
     #@review.save
     #respond_with(@review)
+
+    respond_to do |format|
+      if @review.save
+        format.html { redirect_to @restaurant, notice: 'Review was successfully created.' }
+        format.json { render :show, status: :created, location: @review }
+      else
+        format.html { render :new }
+        format.json { render json: @review.errors, status: :unprocessable_entity }
+      end
+    end
+
     
   end
 
